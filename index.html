@@ -14,6 +14,7 @@
             --light: #f4f4f4;
             --success: #2ecc71;
             --danger: #e74c3c;
+            --info: #3498db;
         }
         
         * {
@@ -38,12 +39,13 @@
         
         /* Header */
         header {
-            background: rgba(15, 15, 26, 0.9);
+            background: rgba(15, 15, 26, 0.95);
             padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
         }
         
         .header-content {
@@ -140,6 +142,33 @@
         
         .btn-secondary:hover {
             background: rgba(255, 107, 0, 0.1);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e96656;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #41d47f;
+        }
+        
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #4da7e8;
         }
         
         /* Hero Section */
@@ -433,8 +462,8 @@
         
         .admin-content {
             background: var(--secondary);
-            width: 90%;
-            max-width: 900px;
+            width: 95%;
+            max-width: 1200px;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -492,14 +521,50 @@
             font-size: 14px;
         }
         
-        .btn-danger {
-            background: var(--danger);
-            color: white;
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
         }
         
-        .btn-success {
-            background: var(--success);
-            color: white;
+        .admin-table th, .admin-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-table th {
+            background: rgba(255, 107, 0, 0.2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .admin-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .edit-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
         }
         
         /* Footer */
@@ -566,6 +631,15 @@
                 width: 30px;
                 height: 30px;
             }
+            
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -607,9 +681,8 @@
             <div class="section-header">
                 <h2 class="section-title">Ranking de Jogadores</h2>
                 <div class="filters">
-                    <select class="form-control" style="width: auto; display: inline-block;">
-                        <option>Filtrar por Time</option>
-                        <option>Todos os Times</option>
+                    <select class="form-control" id="teamFilter" style="width: auto; display: inline-block;">
+                        <option value="all">Todos os Times</option>
                     </select>
                 </div>
             </div>
@@ -618,7 +691,7 @@
                     <div>Posição</div>
                     <div>Jogador</div>
                     <div>Kills</div>
-                    <div>Eliminado</div>
+                    <div>Eliminações</div>
                     <div>Time</div>
                     <div>Pontuação</div>
                 </div>
@@ -676,7 +749,7 @@
                 <a href="#"><i class="fab fa-youtube"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
             </div>
-            <p class="copyright">© 2023 FSA CUP. Todos os direitos reservados.</p>
+            <p class="copyright">© 2025 FSA CUP. Todos os direitos reservados.</p>
         </div>
     </footer>
 
@@ -701,7 +774,7 @@
                     </div>
                     <div class="form-group">
                         <label>Foto de Perfil</label>
-                        <img src="https://via.placeholder.com/100" alt="Preview" class="avatar-preview" id="avatarPreview">
+                        <img src="https://via.placeholder.com/100/1a1a2e/ff6b00?text=FSA" alt="Preview" class="avatar-preview" id="avatarPreview">
                         <div class="file-input-wrapper">
                             <div class="file-input-btn">Escolher Imagem</div>
                             <input type="file" id="avatarInput" accept="image/*">
@@ -724,7 +797,7 @@
     <div class="admin-panel" id="adminPanel">
         <div class="admin-content">
             <div class="modal-header">
-                <h3>Painel Administrativo</h3>
+                <h3>Painel Administrativo - FSA CUP</h3>
             </div>
             <div class="admin-tabs">
                 <div class="admin-tab active" data-tab="players">Jogadores</div>
@@ -732,37 +805,212 @@
                 <div class="admin-tab" data-tab="matches">Partidas</div>
                 <div class="admin-tab" data-tab="history">Histórico</div>
             </div>
+            
+            <!-- Players Tab -->
             <div class="admin-tab-content active" id="playersTab">
-                <h4>Gerenciar Jogadores</h4>
+                <div class="section-header">
+                    <h4>Gerenciar Jogadores</h4>
+                    <button class="btn btn-primary" id="addPlayerBtn">Adicionar Jogador</button>
+                </div>
+                
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Buscar jogador...">
+                    <input type="text" class="form-control" id="playerSearch" placeholder="Buscar jogador...">
                 </div>
-                <div id="adminPlayersList">
-                    <!-- Players list for admin -->
+                
+                <div class="edit-form" id="playerEditForm" style="display: none;">
+                    <h4 id="playerFormTitle">Editar Jogador</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPlayerName">Nome</label>
+                            <input type="text" id="editPlayerName" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPlayerTeam">Time</label>
+                            <select id="editPlayerTeam" class="form-control">
+                                <!-- Teams will be populated here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPlayerKills">Kills</label>
+                            <input type="number" id="editPlayerKills" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPlayerEliminations">Eliminações</label>
+                            <input type="number" id="editPlayerEliminations" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPlayerScore">Pontuação</label>
+                            <input type="number" id="editPlayerScore" class="form-control" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto de Perfil</label>
+                        <img src="https://via.placeholder.com/100/1a1a2e/ff6b00?text=FSA" alt="Preview" class="avatar-preview" id="editPlayerAvatarPreview">
+                        <div class="file-input-wrapper">
+                            <div class="file-input-btn">Alterar Imagem</div>
+                            <input type="file" id="editPlayerAvatarInput" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" id="savePlayerBtn">Salvar</button>
+                        <button class="btn btn-secondary" id="cancelPlayerEdit">Cancelar</button>
+                    </div>
                 </div>
+                
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Jogador</th>
+                            <th>Kills</th>
+                            <th>Eliminações</th>
+                            <th>Time</th>
+                            <th>Pontuação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminPlayersList">
+                        <!-- Players list for admin -->
+                    </tbody>
+                </table>
             </div>
+            
+            <!-- Teams Tab -->
             <div class="admin-tab-content" id="teamsTab">
-                <h4>Gerenciar Times</h4>
-                <button class="btn btn-primary" style="margin-bottom: 15px;">Adicionar Time</button>
-                <div id="adminTeamsList">
-                    <!-- Teams list for admin -->
+                <div class="section-header">
+                    <h4>Gerenciar Times</h4>
+                    <button class="btn btn-primary" id="addTeamBtn">Adicionar Time</button>
                 </div>
+                
+                <div class="edit-form" id="teamEditForm" style="display: none;">
+                    <h4 id="teamFormTitle">Editar Time</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editTeamName">Nome</label>
+                            <input type="text" id="editTeamName" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTeamWins">Vitórias</label>
+                            <input type="number" id="editTeamWins" class="form-control" min="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editTeamKills">Kills</label>
+                            <input type="number" id="editTeamKills" class="form-control" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTeamPlayers">Jogadores</label>
+                            <input type="number" id="editTeamPlayers" class="form-control" min="0" max="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTeamScore">Pontuação</label>
+                            <input type="number" id="editTeamScore" class="form-control" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Logo do Time</label>
+                        <img src="https://via.placeholder.com/100/1a1a2e/ff6b00?text=TEAM" alt="Preview" class="avatar-preview" id="editTeamLogoPreview">
+                        <div class="file-input-wrapper">
+                            <div class="file-input-btn">Alterar Imagem</div>
+                            <input type="file" id="editTeamLogoInput" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" id="saveTeamBtn">Salvar</button>
+                        <button class="btn btn-secondary" id="cancelTeamEdit">Cancelar</button>
+                    </div>
+                </div>
+                
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Time</th>
+                            <th>Vitórias</th>
+                            <th>Kills</th>
+                            <th>Jogadores</th>
+                            <th>Pontuação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTeamsList">
+                        <!-- Teams list for admin -->
+                    </tbody>
+                </table>
             </div>
+            
+            <!-- Matches Tab -->
             <div class="admin-tab-content" id="matchesTab">
-                <h4>Gerenciar Partidas</h4>
-                <button class="btn btn-primary" style="margin-bottom: 15px;">Adicionar Partida</button>
-                <div id="adminMatchesList">
-                    <!-- Matches list for admin -->
+                <div class="section-header">
+                    <h4>Gerenciar Partidas</h4>
+                    <button class="btn btn-primary" id="addMatchBtn">Adicionar Partida</button>
                 </div>
+                
+                <div class="edit-form" id="matchEditForm" style="display: none;">
+                    <h4 id="matchFormTitle">Editar Partida</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editMatchDate">Data</label>
+                            <input type="date" id="editMatchDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editMatchWinner">Vencedor</label>
+                            <select id="editMatchWinner" class="form-control">
+                                <!-- Teams will be populated here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editMatchMap">Mapa</label>
+                            <select id="editMatchMap" class="form-control">
+                                <option value="Bermuda">Bermuda</option>
+                                <option value="Purgatory">Purgatory</option>
+                                <option value="Kalahari">Kalahari</option>
+                                <option value="Alpine">Alpine</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editMatchDuration">Duração (minutos)</label>
+                            <input type="number" id="editMatchDuration" class="form-control" min="1" max="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" id="saveMatchBtn">Salvar</button>
+                        <button class="btn btn-secondary" id="cancelMatchEdit">Cancelar</button>
+                    </div>
+                </div>
+                
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Data</th>
+                            <th>Vencedor</th>
+                            <th>Mapa</th>
+                            <th>Duração</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminMatchesList">
+                        <!-- Matches list for admin -->
+                    </tbody>
+                </table>
             </div>
+            
+            <!-- History Tab -->
             <div class="admin-tab-content" id="historyTab">
-                <h4>Histórico de Ações</h4>
+                <h4>Histórico de Ações Administrativas</h4>
                 <div id="adminHistoryList">
                     <!-- Admin history list -->
                 </div>
             </div>
+            
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="closeAdminPanel">Fechar</button>
+                <button class="btn btn-secondary" id="closeAdminPanel">Fechar Painel</button>
             </div>
         </div>
     </div>
@@ -788,19 +1036,19 @@
     <script>
         // Sample data (in a real app, this would come from JSONBin)
         let players = [
-            { id: 1, name: "ProPlayerFF", avatar: "https://via.placeholder.com/100", kills: 245, eliminated: false, team: "EliteSquad", score: 1850 },
-            { id: 2, name: "SniperMaster", avatar: "https://via.placeholder.com/100", kills: 198, eliminated: true, team: "VictoryTeam", score: 1620 },
-            { id: 3, name: "BattleRoyaleKing", avatar: "https://via.placeholder.com/100", kills: 176, eliminated: false, team: "AlphaWarriors", score: 1540 },
-            { id: 4, name: "FireStorm", avatar: "https://via.placeholder.com/100", kills: 165, eliminated: false, team: "EliteSquad", score: 1420 },
-            { id: 5, name: "ShadowHunter", avatar: "https://via.placeholder.com/100", kills: 152, eliminated: true, team: "VictoryTeam", score: 1380 }
+            { id: 1, name: "ProPlayerFF", avatar: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=PP", kills: 245, eliminations: 12, team: "EliteSquad", score: 1850 },
+            { id: 2, name: "SniperMaster", avatar: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=SM", kills: 198, eliminations: 18, team: "VictoryTeam", score: 1620 },
+            { id: 3, name: "BattleRoyaleKing", avatar: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=BRK", kills: 176, eliminations: 15, team: "AlphaWarriors", score: 1540 },
+            { id: 4, name: "FireStorm", avatar: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=FS", kills: 165, eliminations: 10, team: "EliteSquad", score: 1420 },
+            { id: 5, name: "ShadowHunter", avatar: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=SH", kills: 152, eliminations: 20, team: "VictoryTeam", score: 1380 }
         ];
 
         let teams = [
-            { id: 1, name: "EliteSquad", logo: "https://via.placeholder.com/100", wins: 12, kills: 420, players: 4, score: 3270 },
-            { id: 2, name: "VictoryTeam", logo: "https://via.placeholder.com/100", wins: 8, kills: 350, players: 4, score: 3000 },
-            { id: 3, name: "AlphaWarriors", logo: "https://via.placeholder.com/100", wins: 6, kills: 290, players: 4, score: 2760 },
-            { id: 4, name: "PhoenixForce", logo: "https://via.placeholder.com/100", wins: 5, kills: 265, players: 4, score: 2510 },
-            { id: 5, name: "StormRiders", logo: "https://via.placeholder.com/100", wins: 4, kills: 240, players: 4, score: 2350 }
+            { id: 1, name: "EliteSquad", logo: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=ES", wins: 12, kills: 420, players: 4, score: 3270 },
+            { id: 2, name: "VictoryTeam", logo: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=VT", wins: 8, kills: 350, players: 4, score: 3000 },
+            { id: 3, name: "AlphaWarriors", logo: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=AW", wins: 6, kills: 290, players: 4, score: 2760 },
+            { id: 4, name: "PhoenixForce", logo: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=PF", wins: 5, kills: 265, players: 4, score: 2510 },
+            { id: 5, name: "StormRiders", logo: "https://via.placeholder.com/100/1a1a2e/ff6b00?text=SR", wins: 4, kills: 240, players: 4, score: 2350 }
         ];
 
         let matchHistory = [
@@ -810,6 +1058,8 @@
             { id: 4, date: "2023-05-12", winner: "EliteSquad", map: "Bermuda", duration: "21:55" },
             { id: 5, date: "2023-05-11", winner: "PhoenixForce", map: "Purgatory", duration: "18:40" }
         ];
+
+        let adminHistory = [];
 
         // DOM Elements
         const authModal = document.getElementById('authModal');
@@ -832,6 +1082,32 @@
         const matchHistoryContainer = document.getElementById('matchHistory');
         const adminTabs = document.querySelectorAll('.admin-tab');
         const adminTabContents = document.querySelectorAll('.admin-tab-content');
+        const teamFilter = document.getElementById('teamFilter');
+
+        // Admin elements
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        const playerEditForm = document.getElementById('playerEditForm');
+        const savePlayerBtn = document.getElementById('savePlayerBtn');
+        const cancelPlayerEdit = document.getElementById('cancelPlayerEdit');
+        const adminPlayersList = document.getElementById('adminPlayersList');
+        
+        const addTeamBtn = document.getElementById('addTeamBtn');
+        const teamEditForm = document.getElementById('teamEditForm');
+        const saveTeamBtn = document.getElementById('saveTeamBtn');
+        const cancelTeamEdit = document.getElementById('cancelTeamEdit');
+        const adminTeamsList = document.getElementById('adminTeamsList');
+        
+        const addMatchBtn = document.getElementById('addMatchBtn');
+        const matchEditForm = document.getElementById('matchEditForm');
+        const saveMatchBtn = document.getElementById('saveMatchBtn');
+        const cancelMatchEdit = document.getElementById('cancelMatchEdit');
+        const adminMatchesList = document.getElementById('adminMatchesList');
+        
+        const adminHistoryList = document.getElementById('adminHistoryList');
+
+        // State variables
+        let currentEditingId = null;
+        let isAddingNew = false;
 
         // Event Listeners
         loginBtn.addEventListener('click', () => {
@@ -862,6 +1138,8 @@
             if (password === '5887') {
                 adminAccessModal.style.display = 'none';
                 adminPanel.style.display = 'flex';
+                updateAdminPanels();
+                addAdminHistory("Acesso ao painel administrativo");
             } else {
                 alert('Senha incorreta!');
             }
@@ -883,19 +1161,21 @@
             if (playerName && playerTeam) {
                 // In a real app, this would save to JSONBin
                 const newPlayer = {
-                    id: players.length + 1,
+                    id: players.length > 0 ? Math.max(...players.map(p => p.id)) + 1 : 1,
                     name: playerName,
                     avatar: avatarPreview.src,
                     kills: 0,
-                    eliminated: false,
+                    eliminations: 0,
                     team: playerTeam,
                     score: 0
                 };
                 
                 players.push(newPlayer);
                 updateRankings();
+                updateTeamFilter();
                 authModal.style.display = 'none';
                 alert('Conta criada com sucesso! Você agora está no ranking.');
+                addAdminHistory(`Novo jogador criado: ${playerName}`);
             } else {
                 alert('Por favor, preencha todos os campos!');
             }
@@ -925,6 +1205,213 @@
             });
         });
 
+        // Player management
+        addPlayerBtn.addEventListener('click', () => {
+            isAddingNew = true;
+            currentEditingId = null;
+            document.getElementById('playerFormTitle').textContent = 'Adicionar Jogador';
+            playerEditForm.style.display = 'block';
+            document.getElementById('editPlayerName').value = '';
+            document.getElementById('editPlayerKills').value = '0';
+            document.getElementById('editPlayerEliminations').value = '0';
+            document.getElementById('editPlayerScore').value = '0';
+            document.getElementById('editPlayerTeam').value = '';
+            document.getElementById('editPlayerAvatarPreview').src = 'https://via.placeholder.com/100/1a1a2e/ff6b00?text=FSA';
+        });
+
+        savePlayerBtn.addEventListener('click', () => {
+            const name = document.getElementById('editPlayerName').value;
+            const team = document.getElementById('editPlayerTeam').value;
+            const kills = parseInt(document.getElementById('editPlayerKills').value);
+            const eliminations = parseInt(document.getElementById('editPlayerEliminations').value);
+            const score = parseInt(document.getElementById('editPlayerScore').value);
+            const avatar = document.getElementById('editPlayerAvatarPreview').src;
+
+            if (!name || !team) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            if (isAddingNew) {
+                const newPlayer = {
+                    id: players.length > 0 ? Math.max(...players.map(p => p.id)) + 1 : 1,
+                    name,
+                    avatar,
+                    kills,
+                    eliminations,
+                    team,
+                    score
+                };
+                players.push(newPlayer);
+                addAdminHistory(`Jogador adicionado: ${name}`);
+            } else {
+                const playerIndex = players.findIndex(p => p.id === currentEditingId);
+                if (playerIndex !== -1) {
+                    const oldName = players[playerIndex].name;
+                    players[playerIndex] = {
+                        ...players[playerIndex],
+                        name,
+                        avatar,
+                        kills,
+                        eliminations,
+                        team,
+                        score
+                    };
+                    addAdminHistory(`Jogador editado: ${oldName} -> ${name}`);
+                }
+            }
+
+            updateRankings();
+            updateAdminPanels();
+            playerEditForm.style.display = 'none';
+            isAddingNew = false;
+            currentEditingId = null;
+        });
+
+        cancelPlayerEdit.addEventListener('click', () => {
+            playerEditForm.style.display = 'none';
+            isAddingNew = false;
+            currentEditingId = null;
+        });
+
+        // Team management
+        addTeamBtn.addEventListener('click', () => {
+            isAddingNew = true;
+            currentEditingId = null;
+            document.getElementById('teamFormTitle').textContent = 'Adicionar Time';
+            teamEditForm.style.display = 'block';
+            document.getElementById('editTeamName').value = '';
+            document.getElementById('editTeamWins').value = '0';
+            document.getElementById('editTeamKills').value = '0';
+            document.getElementById('editTeamPlayers').value = '4';
+            document.getElementById('editTeamScore').value = '0';
+            document.getElementById('editTeamLogoPreview').src = 'https://via.placeholder.com/100/1a1a2e/ff6b00?text=TEAM';
+        });
+
+        saveTeamBtn.addEventListener('click', () => {
+            const name = document.getElementById('editTeamName').value;
+            const wins = parseInt(document.getElementById('editTeamWins').value);
+            const kills = parseInt(document.getElementById('editTeamKills').value);
+            const playersCount = parseInt(document.getElementById('editTeamPlayers').value);
+            const score = parseInt(document.getElementById('editTeamScore').value);
+            const logo = document.getElementById('editTeamLogoPreview').src;
+
+            if (!name) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            if (isAddingNew) {
+                const newTeam = {
+                    id: teams.length > 0 ? Math.max(...teams.map(t => t.id)) + 1 : 1,
+                    name,
+                    logo,
+                    wins,
+                    kills,
+                    players: playersCount,
+                    score
+                };
+                teams.push(newTeam);
+                addAdminHistory(`Time adicionado: ${name}`);
+            } else {
+                const teamIndex = teams.findIndex(t => t.id === currentEditingId);
+                if (teamIndex !== -1) {
+                    const oldName = teams[teamIndex].name;
+                    teams[teamIndex] = {
+                        ...teams[teamIndex],
+                        name,
+                        logo,
+                        wins,
+                        kills,
+                        players: playersCount,
+                        score
+                    };
+                    addAdminHistory(`Time editado: ${oldName} -> ${name}`);
+                }
+            }
+
+            updateRankings();
+            updateAdminPanels();
+            updateTeamFilter();
+            teamEditForm.style.display = 'none';
+            isAddingNew = false;
+            currentEditingId = null;
+        });
+
+        cancelTeamEdit.addEventListener('click', () => {
+            teamEditForm.style.display = 'none';
+            isAddingNew = false;
+            currentEditingId = null;
+        });
+
+        // Match management
+        addMatchBtn.addEventListener('click', () => {
+            isAddingNew = true;
+            currentEditingId = null;
+            document.getElementById('matchFormTitle').textContent = 'Adicionar Partida';
+            matchEditForm.style.display = 'block';
+            document.getElementById('editMatchDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('editMatchWinner').value = '';
+            document.getElementById('editMatchMap').value = 'Bermuda';
+            document.getElementById('editMatchDuration').value = '20';
+        });
+
+        saveMatchBtn.addEventListener('click', () => {
+            const date = document.getElementById('editMatchDate').value;
+            const winner = document.getElementById('editMatchWinner').value;
+            const map = document.getElementById('editMatchMap').value;
+            const duration = document.getElementById('editMatchDuration').value;
+
+            if (!date || !winner) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            const durationFormatted = `${Math.floor(duration)}:${(duration % 1 * 60).toString().padStart(2, '0')}`;
+
+            if (isAddingNew) {
+                const newMatch = {
+                    id: matchHistory.length > 0 ? Math.max(...matchHistory.map(m => m.id)) + 1 : 1,
+                    date,
+                    winner,
+                    map,
+                    duration: durationFormatted
+                };
+                matchHistory.unshift(newMatch);
+                addAdminHistory(`Partida adicionada: ${winner} venceu em ${map}`);
+            } else {
+                const matchIndex = matchHistory.findIndex(m => m.id === currentEditingId);
+                if (matchIndex !== -1) {
+                    const oldWinner = matchHistory[matchIndex].winner;
+                    matchHistory[matchIndex] = {
+                        ...matchHistory[matchIndex],
+                        date,
+                        winner,
+                        map,
+                        duration: durationFormatted
+                    };
+                    addAdminHistory(`Partida editada: ${oldWinner} -> ${winner}`);
+                }
+            }
+
+            loadMatchHistory();
+            updateAdminPanels();
+            matchEditForm.style.display = 'none';
+            isAddingNew = false;
+            currentEditingId = null;
+        });
+
+        cancelMatchEdit.addEventListener('click', () => {
+            matchEditForm.style.display = 'none';
+            isAddingNew = false;
+            currentEditingId = null;
+        });
+
+        // Team filter
+        teamFilter.addEventListener('change', () => {
+            updateRankings();
+        });
+
         // Close modals when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target === authModal) {
@@ -943,15 +1430,24 @@
             updateRankings();
             populateTeamsDropdown();
             loadMatchHistory();
+            updateTeamFilter();
         }
 
         function updateRankings() {
+            const selectedTeam = teamFilter.value;
+            
+            // Filter players if a team is selected
+            let filteredPlayers = players;
+            if (selectedTeam !== 'all') {
+                filteredPlayers = players.filter(player => player.team === selectedTeam);
+            }
+            
             // Sort players by score (descending)
-            players.sort((a, b) => b.score - a.score);
+            filteredPlayers.sort((a, b) => b.score - a.score);
             
             // Update players ranking
             playersRanking.innerHTML = '';
-            players.forEach((player, index) => {
+            filteredPlayers.forEach((player, index) => {
                 const positionClass = index === 0 ? 'position-1' : 
                                     index === 1 ? 'position-2' : 
                                     index === 2 ? 'position-3' : '';
@@ -965,9 +1461,9 @@
                         <span>${player.name}</span>
                     </div>
                     <div>${player.kills}</div>
-                    <div>${player.eliminated ? 'Sim' : 'Não'}</div>
+                    <div>${player.eliminations}</div>
                     <div class="team-info">
-                        <img src="https://via.placeholder.com/100" alt="${player.team}" class="team-logo">
+                        <img src="${teams.find(t => t.name === player.team)?.logo || 'https://via.placeholder.com/100/1a1a2e/ff6b00?text=TEAM'}" alt="${player.team}" class="team-logo">
                         <span>${player.team}</span>
                     </div>
                     <div>${player.score}</div>
@@ -1000,14 +1496,34 @@
         }
 
         function populateTeamsDropdown() {
-            const teamSelect = document.getElementById('playerTeam');
-            teamSelect.innerHTML = '<option value="">Selecione um time</option>';
+            const teamSelects = [
+                document.getElementById('playerTeam'),
+                document.getElementById('editPlayerTeam'),
+                document.getElementById('editMatchWinner')
+            ];
+            
+            teamSelects.forEach(select => {
+                if (select) {
+                    select.innerHTML = '<option value="">Selecione um time</option>';
+                    
+                    teams.forEach(team => {
+                        const option = document.createElement('option');
+                        option.value = team.name;
+                        option.textContent = team.name;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        function updateTeamFilter() {
+            teamFilter.innerHTML = '<option value="all">Todos os Times</option>';
             
             teams.forEach(team => {
                 const option = document.createElement('option');
                 option.value = team.name;
                 option.textContent = team.name;
-                teamSelect.appendChild(option);
+                teamFilter.appendChild(option);
             });
         }
 
@@ -1029,8 +1545,269 @@
             });
         }
 
+        function updateAdminPanels() {
+            // Update players table
+            adminPlayersList.innerHTML = '';
+            players.forEach(player => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${player.id}</td>
+                    <td>
+                        <div class="player-info">
+                            <img src="${player.avatar}" alt="${player.name}" class="player-avatar">
+                            <span>${player.name}</span>
+                        </div>
+                    </td>
+                    <td>${player.kills}</td>
+                    <td>${player.eliminations}</td>
+                    <td>${player.team}</td>
+                    <td>${player.score}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-info btn-sm edit-player" data-id="${player.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm delete-player" data-id="${player.id}">Excluir</button>
+                        </div>
+                    </td>
+                `;
+                adminPlayersList.appendChild(row);
+            });
+
+            // Update teams table
+            adminTeamsList.innerHTML = '';
+            teams.forEach(team => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${team.id}</td>
+                    <td>
+                        <div class="player-info">
+                            <img src="${team.logo}" alt="${team.name}" class="player-avatar">
+                            <span>${team.name}</span>
+                        </div>
+                    </td>
+                    <td>${team.wins}</td>
+                    <td>${team.kills}</td>
+                    <td>${team.players}/4</td>
+                    <td>${team.score}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-info btn-sm edit-team" data-id="${team.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm delete-team" data-id="${team.id}">Excluir</button>
+                        </div>
+                    </td>
+                `;
+                adminTeamsList.appendChild(row);
+            });
+
+            // Update matches table
+            adminMatchesList.innerHTML = '';
+            matchHistory.forEach(match => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${match.id}</td>
+                    <td>${match.date}</td>
+                    <td>${match.winner}</td>
+                    <td>${match.map}</td>
+                    <td>${match.duration}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-info btn-sm edit-match" data-id="${match.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm delete-match" data-id="${match.id}">Excluir</button>
+                        </div>
+                    </td>
+                `;
+                adminMatchesList.appendChild(row);
+            });
+
+            // Update admin history
+            adminHistoryList.innerHTML = '';
+            adminHistory.forEach(entry => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <div class="history-header">
+                        <span>${entry.action}</span>
+                        <small>${entry.timestamp}</small>
+                    </div>
+                `;
+                adminHistoryList.appendChild(item);
+            });
+
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-player').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    editPlayer(id);
+                });
+            });
+
+            document.querySelectorAll('.delete-player').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    deletePlayer(id);
+                });
+            });
+
+            document.querySelectorAll('.edit-team').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    editTeam(id);
+                });
+            });
+
+            document.querySelectorAll('.delete-team').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    deleteTeam(id);
+                });
+            });
+
+            document.querySelectorAll('.edit-match').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    editMatch(id);
+                });
+            });
+
+            document.querySelectorAll('.delete-match').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    deleteMatch(id);
+                });
+            });
+
+            // Add event listeners for avatar changes in admin forms
+            document.getElementById('editPlayerAvatarInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('editPlayerAvatarPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('editTeamLogoInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('editTeamLogoPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function editPlayer(id) {
+            const player = players.find(p => p.id === id);
+            if (player) {
+                isAddingNew = false;
+                currentEditingId = id;
+                document.getElementById('playerFormTitle').textContent = 'Editar Jogador';
+                playerEditForm.style.display = 'block';
+                document.getElementById('editPlayerName').value = player.name;
+                document.getElementById('editPlayerKills').value = player.kills;
+                document.getElementById('editPlayerEliminations').value = player.eliminations;
+                document.getElementById('editPlayerScore').value = player.score;
+                document.getElementById('editPlayerTeam').value = player.team;
+                document.getElementById('editPlayerAvatarPreview').src = player.avatar;
+            }
+        }
+
+        function deletePlayer(id) {
+            if (confirm('Tem certeza que deseja excluir este jogador?')) {
+                const playerIndex = players.findIndex(p => p.id === id);
+                if (playerIndex !== -1) {
+                    const playerName = players[playerIndex].name;
+                    players.splice(playerIndex, 1);
+                    updateRankings();
+                    updateAdminPanels();
+                    addAdminHistory(`Jogador excluído: ${playerName}`);
+                }
+            }
+        }
+
+        function editTeam(id) {
+            const team = teams.find(t => t.id === id);
+            if (team) {
+                isAddingNew = false;
+                currentEditingId = id;
+                document.getElementById('teamFormTitle').textContent = 'Editar Time';
+                teamEditForm.style.display = 'block';
+                document.getElementById('editTeamName').value = team.name;
+                document.getElementById('editTeamWins').value = team.wins;
+                document.getElementById('editTeamKills').value = team.kills;
+                document.getElementById('editTeamPlayers').value = team.players;
+                document.getElementById('editTeamScore').value = team.score;
+                document.getElementById('editTeamLogoPreview').src = team.logo;
+            }
+        }
+
+        function deleteTeam(id) {
+            if (confirm('Tem certeza que deseja excluir este time?')) {
+                const teamIndex = teams.findIndex(t => t.id === id);
+                if (teamIndex !== -1) {
+                    const teamName = teams[teamIndex].name;
+                    // Also remove players from this team
+                    players = players.filter(p => p.team !== teamName);
+                    teams.splice(teamIndex, 1);
+                    updateRankings();
+                    updateAdminPanels();
+                    updateTeamFilter();
+                    addAdminHistory(`Time excluído: ${teamName}`);
+                }
+            }
+        }
+
+        function editMatch(id) {
+            const match = matchHistory.find(m => m.id === id);
+            if (match) {
+                isAddingNew = false;
+                currentEditingId = id;
+                document.getElementById('matchFormTitle').textContent = 'Editar Partida';
+                matchEditForm.style.display = 'block';
+                document.getElementById('editMatchDate').value = match.date;
+                document.getElementById('editMatchWinner').value = match.winner;
+                document.getElementById('editMatchMap').value = match.map;
+                
+                // Parse duration (format: "MM:SS")
+                const [minutes, seconds] = match.duration.split(':').map(Number);
+                document.getElementById('editMatchDuration').value = minutes + (seconds / 60);
+            }
+        }
+
+        function deleteMatch(id) {
+            if (confirm('Tem certeza que deseja excluir esta partida?')) {
+                const matchIndex = matchHistory.findIndex(m => m.id === id);
+                if (matchIndex !== -1) {
+                    const matchInfo = `Partida #${matchHistory[matchIndex].id}`;
+                    matchHistory.splice(matchIndex, 1);
+                    loadMatchHistory();
+                    updateAdminPanels();
+                    addAdminHistory(`Partida excluída: ${matchInfo}`);
+                }
+            }
+        }
+
+        function addAdminHistory(action) {
+            const now = new Date();
+            const timestamp = now.toLocaleString('pt-BR');
+            adminHistory.unshift({ action, timestamp });
+            
+            // Keep only the last 50 entries
+            if (adminHistory.length > 50) {
+                adminHistory.pop();
+            }
+            
+            // Update admin history display if the panel is open
+            if (adminPanel.style.display === 'flex') {
+                updateAdminPanels();
+            }
+        }
+
         // Initialize the application
         init();
     </script>
 </body>
-                </html>
+</html>
