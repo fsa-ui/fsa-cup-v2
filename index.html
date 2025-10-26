@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>FSA CUP - Torneio Competitivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --card: rgba(16, 23, 41, 0.8);
+  --accent: #00ff88;
+  --accent-glow: rgba(0, 255, 136, 0.3);
+  --secondary: #7b61ff;
+  --muted: #8b9bb4;
+  --danger: #ff4757;
+  --border: rgba(255, 255, 255, 0.1);
+  --gold: #ffd700;
+  --silver: #c0c0c0;
+  --bronze: #cd7f32;
+  --text: #ffffff;
+  --gradient: linear-gradient(135deg, #00ff88 0%, #7b61ff 100%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(123, 97, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(16, 23, 41, 0.8) 0%, transparent 50%),
+    linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Header Hero */
+.hero-section {
+  position: relative;
+  padding: 80px 20px 60px;
+  text-align: center;
+  background: 
+    radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(123, 97, 255, 0.1) 0%, transparent 50%);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 4rem;
+  font-weight: 900;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 30px var(--accent-glow);
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.cta-button {
+  background: var(--gradient);
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  color: #000;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 25px var(--accent-glow);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px var(--accent-glow);
+}
+
+/* Container e Cards */
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+/* Toggle Buttons */
+.toggle-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  background: rgba(16, 23, 41, 0.6);
+  padding: 10px;
+  border-radius: 15px;
+  border: 1px solid var(--border);
+}
+
+.toggle-btn {
+  flex: 1;
+  background: transparent;
+  border: 2px solid transparent;
+  padding: 15px 25px;
+  border-radius: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+.toggle-btn.active {
+  background: var(--gradient);
+  color: #000;
+  border-color: var(--accent);
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+  border-bottom: 2px solid var(--border);
+}
+
+td {
+  padding: 18px 15px;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+  transform: translateX(5px);
+}
+
+/* Ranking Colors */
+.rank-1 { color: var(--gold); font-weight: 700; }
+.rank-2 { color: var(--silver); font-weight: 700; }
+.rank-3 { color: var(--bronze); font-weight: 700; }
+
+/* Player Card */
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.player-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  object-fit: cover;
+  background: linear-gradient(45deg, #00ff88, #7b61ff);
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.player-nick {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Status e Economy */
+.status-bar {
+  background: var(--card);
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.economy-status {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+}
+
+.status-online { color: var(--accent); }
+.status-offline { color: var(--muted); }
+
+/* Modal de Criação de Conta */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--accent);
+}
+
+.modal-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.modal-subtitle {
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: linear-gradient(45deg, #00ff88, #7b61ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-upload-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.avatar-upload-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent);
+}
+
+/* Editor Corner */
+.editor-corner {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  z-index: 100;
+}
+
+.corner-panel {
+  width: 400px;
+  background: var(--card);
+  border-radius: 15px;
+  border: 1px solid var(--border);
+  padding: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  margin-bottom: 15px;
+}
+
+.admin-btn {
+  background: var(--gradient);
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #000;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 8px 25px var(--accent-glow);
+  transition: all 0.3s ease;
+}
+
+.admin-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 12px 35px var(--accent-glow);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateX(150%);
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .toggle-buttons {
+    flex-direction: column;
+  }
+  
+  .corner-panel {
+    width: calc(100vw - 40px);
+    right: 20px;
+  }
+  
+  .player-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .status-bar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
+
+/* Animações */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50% { box-shadow: 0 0 40px var(--accent-glow); }
+}
+
+.glow-effect {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+}
+</style>
+</head>
+<body>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">FSA CUP</h1>
+    <p class="hero-subtitle">Torneio competitivo onde apenas os melhores se tornam lendas</p>
+    <button class="cta-button glow-effect" onclick="openCreateAccount()">
+      🎮 Tornar-se Lenda
+    </button>
+  </div>
+</section>
+
+<div class="container">
+  <!-- Status -->
+  <div class="status-bar">
+    <div class="economy-status">
+      <span id="statusEconomia">📊 Sistema Econômico Ativo</span>
+      <span id="statusConexao" class="status-online">🟢 Online</span>
+    </div>
+    <div id="statusText">⚡ Pronto para a batalha</div>
+  </div>
+
+  <!-- Toggle Sections -->
+  <div class="toggle-buttons">
+    <button class="toggle-btn active" onclick="showSection('times')">🏆 Ranking de Times</button>
+    <button class="toggle-btn" onclick="showSection('players')">👑 Lendas do Jogo</button>
+    <button class="toggle-btn" onclick="showSection('historico')">📜 Histórico de Batalhas</button>
+  </div>
+
+  <!-- Times Section -->
+  <section class="card section-content fade-in" id="section-times">
+    <h2 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px;">🏆 Ranking de Times</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Posição</th>
+          <th>Time</th>
+          <th>Pontuação</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTimes"></tbody>
+    </table>
+  </section>
+
+  <!-- Players Section -->
+  <section class="card section-content hidden" id="section-players">
+    <h2 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px;">👑 Lendas do Jogo</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Jogador</th>
+          <th>Time</th>
+          <th>Eliminações</th>
+        </tr>
+      </thead>
+      <tbody id="corpoPlayers"></tbody>
+    </table>
+  </section>
+
+  <!-- History Section -->
+  <section class="card section-content hidden" id="section-historico">
+    <h2 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px;">📜 Histórico de Batalhas</h2>
+    <input type="text" id="pesquisarSala" placeholder="🔍 Buscar batalha..." 
+           style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: white; margin-bottom: 20px;">
+    <div id="historicoSalas"></div>
+  </section>
+</div>
+
+<!-- Create Account Modal -->
+<div class="modal" id="createAccountModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeCreateAccount()">×</button>
+    <h2 class="modal-title">Junte-se à Batalha</h2>
+    <p class="modal-subtitle">Crie sua conta e entre para o hall da fama</p>
+    
+    <div class="form-group">
+      <label>Nome de Usuário</label>
+      <input type="text" id="usernameInput" placeholder="Seu nome no ranking">
+    </div>
+    
+    <div class="form-group">
+      <label>Nick no Jogo</label>
+      <input type="text" id="gameNickInput" placeholder="Seu nick no jogo">
+    </div>
+    
+    <div class="form-group">
+      <label>Foto de Perfil</label>
+      <div class="avatar-upload">
+        <div class="avatar-preview">
+          <img id="avatarPreview" src="" alt="Preview" style="display: none;">
+          <span id="avatarPlaceholder">👤</span>
+        </div>
+        <div class="avatar-upload-btn" onclick="document.getElementById('avatarUpload').click()">
+          📸 Escolher Foto
+        </div>
+        <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+      </div>
+    </div>
+    
+    <button class="cta-button" style="width: 100%; margin-top: 20px;" onclick="createAccount()">
+      🚀 Criar Conta
+    </button>
+    
+    <p style="text-align: center; margin-top: 15px; color: var(--muted); font-size: 0.9rem;">
+      Apenas uma conta por dispositivo
+    </p>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="editor-corner">
+  <div id="painelAdmin" class="corner-panel hidden">
+    <div id="loginAdmin">
+      <h4 style="margin-bottom: 15px;">🔐 Acesso Admin</h4>
+      <input type="password" id="senhaAdmin" placeholder="Senha de administrador" 
+             style="width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; color: white;">
+      <button class="cta-button" style="width: 100%; padding: 10px;" onclick="entrarAdmin()">Acessar</button>
+    </div>
+  </div>
+  <button class="admin-btn" id="botaoPainel">⚙️</button>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<footer>
+  © 2025 FSA CUP - Torneio Competitivo | Desenvolvido para lendas
+</footer>
+
+<script>
+// ==================== CONFIGURAÇÃO ====================
+const JSONBIN_CONFIG = {
+    binId: '68fdaba443b1c97be98188e6',
+    apiKey: '$2a$10$cUoBc1xqES1SyYpEsaLaouqMjqi/xkwBaWFE1TXl2q9anPcSTTNeq'
+};
+
+// ==================== VARIÁVEIS GLOBAIS ====================
+let times = [];
+let players = [];
+let salas = [];
+let userAccount = null;
+let editMode = false;
+
+// ==================== SISTEMA DE CONTA ====================
+function checkExistingAccount() {
+    const savedAccount = localStorage.getItem('fsa_user_account');
+    const deviceId = localStorage.getItem('fsa_device_id');
+    
+    if (!deviceId) {
+        localStorage.setItem('fsa_device_id', generateDeviceId());
+    }
+    
+    if (savedAccount) {
+        userAccount = JSON.parse(savedAccount);
+        showToast(`Bem-vindo de volta, ${userAccount.username}!`, 'success');
+    }
+    
+    return userAccount !== null;
+}
+
+function generateDeviceId() {
+    return 'fsa_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+}
+
+function openCreateAccount() {
+    if (checkExistingAccount()) {
+        showToast('Você já possui uma conta!', 'warning');
+        return;
+    }
+    document.getElementById('createAccountModal').classList.add('active');
+}
+
+function closeCreateAccount() {
+    document.getElementById('createAccountModal').classList.remove('active');
+}
+
+function previewAvatar(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatarPreview').src = e.target.result;
+            document.getElementById('avatarPreview').style.display = 'block';
+            document.getElementById('avatarPlaceholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function createAccount() {
+    const username = document.getElementById('usernameInput').value.trim();
+    const gameNick = document.getElementById('gameNickInput').value.trim();
+    const avatarFile = document.getElementById('avatarUpload').files[0];
+    
+    if (!username || !gameNick) {
+        showToast('Preencha todos os campos!', 'error');
+        return;
+    }
+    
+    if (players.some(p => p.username === username)) {
+        showToast('Nome de usuário já existe!', 'error');
+        return;
+    }
+    
+    let avatarUrl = '';
+    if (avatarFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            avatarUrl = e.target.result;
+            finishAccountCreation(username, gameNick, avatarUrl);
+        };
+        reader.readAsDataURL(avatarFile);
+    } else {
+        finishAccountCreation(username, gameNick, '');
+    }
+}
+
+function finishAccountCreation(username, gameNick, avatarUrl) {
+    userAccount = {
+        id: generateDeviceId(),
+        username: username,
+        gameNick: gameNick,
+        avatar: avatarUrl,
+        kills: 0,
+        team: 'Sem Time',
+        createdAt: new Date().toISOString()
+    };
+    
+    players.push({
+        username: username,
+        gameNick: gameNick,
+        avatar: avatarUrl,
+        kills: 0,
+        team: 'Sem Time'
+    });
+    
+    localStorage.setItem('fsa_user_account', JSON.stringify(userAccount));
+    salvarDados();
+    
+    showToast(`Conta criada com sucesso, ${username}! Bem-vindo à arena!`, 'success');
+    closeCreateAccount();
+    renderAll();
+}
+
+// ==================== SISTEMA DE TOAST ====================
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'} ${message}</span>
+    `;
+    
+    document.getElementById('toastContainer').appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// ==================== INTERFACE ====================
+function showSection(sectionName) {
+    document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.querySelectorAll('.section-content').forEach(section => {
+        section.classList.add('hidden');
+        section.classList.remove('fade-in');
+    });
+    
+    const activeSection = document.getElementById(`section-${sectionName}`);
+    activeSection.classList.remove('hidden');
+    setTimeout(() => activeSection.classList.add('fade-in'), 10);
+    
+    if (sectionName === 'historico') renderHistorico();
+}
+
+// ==================== SISTEMA DE DADOS ====================
+async function carregarDados() {
+    try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}/latest`, {
+            headers: { 'X-Master-Key': JSONBIN_CONFIG.apiKey }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            times = data.record.times || [];
+            players = data.record.players || [];
+            salas = data.record.salas || [];
+            
+            // Verificar se usuário já existe nos players
+            const savedAccount = localStorage.getItem('fsa_user_account');
+            if (savedAccount) {
+                userAccount = JSON.parse(savedAccount);
+                const userInPlayers = players.find(p => p.username === userAccount.username);
+                if (!userInPlayers) {
+                    players.push(userAccount);
+                }
+            }
+        }
+    } catch (error) {
+        console.log('Usando dados locais');
+        const localData = JSON.parse(localStorage.getItem('fsa_data') || '{"times":[],"players":[],"salas":[]}');
+        times = localData.times;
+        players = localData.players;
+        salas = localData.salas;
+    }
+    
+    // Dados de exemplo
+    if (times.length === 0) {
+        times = [
+            { name: "Dragões Celestiais", points: 2850 },
+            { name: "Fúria Noturna", points: 2670 },
+            { name: "Trovão Élfico", points: 2450 }
+        ];
+    }
+    
+    if (players.length === 0) {
+        players = [
+            { username: "ShadowHunter", gameNick: "SH_Pro", kills: 156, team: "Dragões Celestiais", avatar: "" },
+            { username: "NeoPhantom", gameNick: "Phantom", kills: 142, team: "Fúria Noturna", avatar: "" },
+            { username: "CyberWolf", gameNick: "Wolf", kills: 128, team: "Trovão Élfico", avatar: "" }
+        ];
+    }
+    
+    checkExistingAccount();
+    renderAll();
+}
+
+async function salvarDados() {
+    const dados = { times, players, salas };
+    localStorage.setItem('fsa_data', JSON.stringify(dados));
+    
+    try {
+        await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_CONFIG.apiKey
+            },
+            body: JSON.stringify(dados)
+        });
+    } catch (error) {
+        console.log('Erro ao salvar online');
+    }
+}
+
+// ==================== RENDERIZAÇÃO ====================
+function renderAll() {
+    renderTimes();
+    renderPlayers();
+    renderHistorico();
+}
+
+function renderTimes() {
+    const corpoTimes = document.getElementById('corpoTimes');
+    const timesSorted = [...times].sort((a, b) => (b.points || 0) - (a.points || 0));
+    
+    corpoTimes.innerHTML = timesSorted.map((t, i) => `
+        <tr>
+            <td class="rank-${i + 1}">#${i + 1}</td>
+            <td>${t.name}</td>
+            <td class="rank-${i + 1}">${t.points || 0}</td>
+        </tr>
+    `).join('');
+}
+
+function renderPlayers() {
+    const corpoPlayers = document.getElementById('corpoPlayers');
+    const playersSorted = [...players].sort((a, b) => (b.kills || 0) - (a.kills || 0));
+    
+    corpoPlayers.innerHTML = playersSorted.map((p, i) => {
+        const rankClass = i < 3 ? `rank-${i + 1}` : '';
+        return `
+            <tr>
+                <td class="${rankClass}">#${i + 1}</td>
+                <td>
+                    <div class="player-card">
+                        <div class="player-avatar">
+                            ${p.avatar ? `<img src="${p.avatar}" alt="${p.username}">` : '👤'}
+                        </div>
+                        <div class="player-info">
+                            <div class="player-name">${p.username}</div>
+                            <div class="player-nick">${p.gameNick}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>${p.team}</td>
+                <td class="${rankClass}">${p.kills || 0}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderHistorico() {
+    const historicoSalas = document.getElementById('historicoSalas');
+    const filtro = document.getElementById('pesquisarSala').value.toLowerCase();
+    
+    historicoSalas.innerHTML = (salas.length > 0 ? salas : [
+        { nome: "Batalha Épica - Final", times: [{name: "Dragões Celestiais", points: 3}, {name: "Fúria Noturna", points: 1}], players: [] },
+        { nome: "Semi Final - Grupo A", times: [{name: "Trovão Élfico", points: 2}, {name: "Dragões Celestiais", points: 2}], players: [] }
+    ])
+    .filter(s => s.nome.toLowerCase().includes(filtro))
+    .map(s => `
+        <div class="history-room">
+            <div class="room-title">${s.nome}</div>
+            <table>
+                <thead><tr><th>Time</th><th>Pontos</th></tr></thead>
+                <tbody>
+                    ${s.times.map(t => `<tr><td>${t.name}</td><td>${t.points}</td></tr>`).join('')}
+                </tbody>
+            </table>
+        </div>
+    `).join('');
+}
+
+// ==================== ADMIN ====================
+document.getElementById('botaoPainel').addEventListener('click', function() {
+    document.getElementById('painelAdmin').classList.toggle('hidden');
+});
+
+function entrarAdmin() {
+    const senha = document.getElementById('senhaAdmin').value;
+    if (senha === '5887') {
+        editMode = true;
+        showToast('Modo Administrador Ativado', 'success');
+        document.getElementById('loginAdmin').innerHTML = `
+            <h4>🔧 Painel Admin</h4>
+            <button class="cta-button" style="width: 100%; margin: 5px 0;" onclick="adicionarTime()">➕ Time</button>
+            <button class="cta-button" style="width: 100%; margin: 5px 0;" onclick="adicionarSala()">➕ Sala</button>
+            <button class="cta-button" style="width: 100%; margin: 5px 0;" onclick="exportarJSON()">💾 Backup</button>
+        `;
+    } else {
+        showToast('Senha incorreta', 'error');
+    }
+}
+
+// ==================== INICIALIZAÇÃO ====================
+carregarDados();
+
+// Funções auxiliares para admin (simplificadas)
+async function adicionarTime() {
+    const nome = prompt('Nome do novo time:');
+    if (nome) {
+        times.push({ name: nome, points: 0 });
+        await salvarDados();
+        renderAll();
+        showToast(`Time ${nome} adicionado!`, 'success');
+    }
+}
+
+async function adicionarSala() {
+    const nome = prompt('Nome da nova sala:');
+    if (nome) {
+        salas.push({ 
+            nome: nome, 
+            times: times.map(t => ({ name: t.name, points: Math.floor(Math.random() * 5) })),
+            players: [],
+            createdAt: new Date().toISOString()
+        });
+        await salvarDados();
+        renderAll();
+        showToast(`Sala ${nome} adicionada!`, 'success');
+    }
+}
+
+function exportarJSON() {
+    const data = { times, players, salas };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'fsa_cup_backup.json';
+    a.click();
+    showToast('Backup exportado!', 'success');
+}
+</script>
+</body>
+</html>
